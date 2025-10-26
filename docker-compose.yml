@@ -9,7 +9,6 @@ services:
     container_name: linkedin-profile-getter
     volumes:
       - .:/app
-      - /app/node_modules
       - pnpm-cache:/root/.local/share/pnpm
     working_dir: /app
     command: pnpm run build
