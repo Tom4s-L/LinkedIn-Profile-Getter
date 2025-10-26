@@ -2,3 +2,6 @@ node_modules
 extension
 .pnpm-store
 none
+
+# Secrets
+src/config/notion.ts

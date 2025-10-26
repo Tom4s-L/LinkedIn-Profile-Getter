@@ -8,5 +8,14 @@
   },
   "background": {
     "service_worker": "dist/background/index.mjs"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.linkedin.com/*"],
+      "js": ["dist/content/index.mjs"]
+    }
+  ],
+  "host_permissions": [
+    "https://api.notion.com/*"
+  ]
 }

@@ -8,10 +8,11 @@
     "dev": "vite",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "run-s clear build:prepare build:web build:background",
+    "build": "run-s clear build:prepare build:web build:background build:content",
     "build:prepare": "esno scripts/prepare.ts",
     "build:web": "vite build",
     "build:background": "vite build --config vite.config.background.mts",
+    "build:content": "vite build --config vite.config.content.mts",
     "clear": "rimraf extension"
   },
   "devDependencies": {
