@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Service pour le build de l'extension
+  web-ext-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web-ext-build
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - pnpm-cache:/root/.local/share/pnpm
+    working_dir: /app
+    command: pnpm run build
+
+volumes:
+  pnpm-cache:
