@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@9.12.2",
-  "description": "Test WebExtension",
+  "description": "An extension to get the profile of a LinkedIn user",
   "scripts": {
     "dev": "vite",
     "lint": "eslint .",
