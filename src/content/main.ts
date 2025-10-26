@@ -21,10 +21,26 @@ interface ProfileData {
   url: string
 }
 
+const formatNameWithUppercaseLastName = (fullName: string): string => {
+  if (!fullName)
+    return ''
+
+  const parts = fullName.trim().split(' ')
+  if (parts.length === 0)
+    return ''
+
+  // Le dernier mot est le nom de famille
+  const lastName = parts[parts.length - 1].toUpperCase()
+  const firstNames = parts.slice(0, -1).join(' ')
+
+  return firstNames ? `${firstNames} ${lastName}` : lastName
+}
+
 const extractProfileData = (card: HTMLElement): ProfileData => {
   const nameLink = card.querySelector('a[data-view-name=\'search-result-lockup-title\'][href*=\'/in/\']') as HTMLAnchorElement | null
   const url = (nameLink?.href || (card as HTMLAnchorElement).href || '').split('?')[0]
-  const name = nameLink?.textContent?.trim().replace(/\s+/g, ' ') || ''
+  const rawName = nameLink?.textContent?.trim().replace(/\s+/g, ' ') || ''
+  const name = formatNameWithUppercaseLastName(rawName)
   const nameP = nameLink?.closest('p')
   const headline = nameP?.nextElementSibling?.textContent?.trim().replace(/\s+/g, ' ') || ''
 
@@ -55,6 +71,25 @@ const createLogButton = (card: HTMLElement): HTMLButtonElement => {
     transition: 'all 0.3s ease',
   })
 
+  // Vérifier si le profil existe déjà
+  const data = extractProfileData(card)
+  chrome.runtime.sendMessage(
+    {
+      type: 'CHECK_PROFILE_EXISTS',
+      url: data.url,
+    },
+    (response) => {
+      if (response?.exists) {
+        // Profil déjà enregistré - griser le bouton
+        btn.textContent = '✓ Déjà enregistré'
+        btn.disabled = true
+        btn.style.backgroundColor = '#6b7280'
+        btn.style.cursor = 'not-allowed'
+        btn.style.opacity = '0.6'
+      }
+    },
+  )
+
   btn.addEventListener('click', async (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -80,10 +115,10 @@ const createLogButton = (card: HTMLElement): HTMLButtonElement => {
           btn.textContent = '✓'
           btn.style.backgroundColor = '#10b981'
           setTimeout(() => {
-            btn.textContent = 'Log'
-            btn.style.backgroundColor = '#0a66c2'
-            btn.disabled = false
-            btn.style.cursor = 'pointer'
+            btn.textContent = '✓ Déjà enregistré'
+            btn.style.backgroundColor = '#6b7280'
+            btn.style.opacity = '0.6'
+            btn.style.cursor = 'not-allowed'
           }, 2000)
         }
         else {

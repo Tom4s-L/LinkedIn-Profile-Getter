@@ -19,6 +19,40 @@ interface NotionResponse {
   error?: string
 }
 
+// Fonction pour vérifier si un profil existe déjà dans Notion
+async function checkProfileExists(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(`https://api.notion.com/v1/databases/${NOTION_CONFIG.databaseId}/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${NOTION_CONFIG.apiKey}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
+      },
+      body: JSON.stringify({
+        filter: {
+          property: 'Url LinkedIn',
+          url: {
+            equals: url,
+          },
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      console.error('Error checking profile existence')
+      return false
+    }
+
+    const data = await response.json()
+    return data.results.length > 0
+  }
+  catch (error) {
+    console.error('Error checking profile:', error)
+    return false
+  }
+}
+
 // Fonction pour envoyer à Notion
 async function sendToNotion(data: ProfileData): Promise<NotionResponse> {
   try {
@@ -99,5 +133,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })
       })
     return true // Indique qu'on va répondre de manière asynchrone
+  }
+
+  if (message.type === 'CHECK_PROFILE_EXISTS') {
+    checkProfileExists(message.url)
+      .then(exists => sendResponse({ exists }))
+      .catch((error) => {
+        console.error('Error in checkProfileExists:', error)
+        sendResponse({ exists: false })
+      })
+    return true
   }
 })
