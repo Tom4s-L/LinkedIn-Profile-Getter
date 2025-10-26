@@ -9,11 +9,13 @@
       "~/*": ["src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "chrome", "webextension-polyfill", "firefox-webext-browser"],
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
+  },
+  "vueCompilerOptions": {
+    "globalTypesPath": "none"
   },
   "exclude": ["dist", "node_modules"]
 }
