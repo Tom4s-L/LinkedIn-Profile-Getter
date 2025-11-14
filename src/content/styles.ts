@@ -8,10 +8,10 @@ export const BUTTON_BASE_STYLES = {
   cursor: 'pointer',
   backgroundColor: 'transparent',
   color: '#0a66c2',
-  border: '1px solid #0a66c2',
+  border: 'none',
   transition: 'all 0.2s ease',
   fontFamily: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif',
-  boxShadow: 'none',
+  boxShadow: '0 0 0 1px #0a66c2',
 }
 
 interface ButtonState {

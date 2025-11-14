@@ -9,8 +9,10 @@ export function applyButtonState(btn: HTMLButtonElement, state: keyof typeof BUT
     btn.style.backgroundColor = stateConfig.backgroundColor
   if (stateConfig.color)
     btn.style.color = stateConfig.color
-  if (stateConfig.borderColor)
-    btn.style.borderColor = stateConfig.borderColor
+  if (stateConfig.borderColor) {
+    btn.style.border = 'none'
+    btn.style.boxShadow = `0 0 0 1px ${stateConfig.borderColor}`
+  }
 
   if (state === 'disabled') {
     btn.disabled = true
@@ -30,14 +32,14 @@ function setupHoverEffect(btn: HTMLButtonElement) {
   btn.addEventListener('mouseenter', () => {
     if (!btn.disabled) {
       btn.style.backgroundColor = '#e8f3fb'
-      btn.style.borderWidth = '2px'
+      btn.style.boxShadow = '0 0 0 2px #0a66c2'
     }
   })
 
   btn.addEventListener('mouseleave', () => {
     if (!btn.disabled) {
       btn.style.backgroundColor = 'transparent'
-      btn.style.borderWidth = '1px'
+      btn.style.boxShadow = '0 0 0 1px #0a66c2'
     }
   })
 }

@@ -15,12 +15,37 @@ export function extractProfileDataFromCard(card: HTMLElement): ProfileData {
 export function extractProfileDataFromPage(): ProfileData | null {
   const url = window.location.href.split('?')[0]
 
-  const nameNodes = $x('//main//h1')
-  const rawName = (nameNodes[0] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
-  const name = formatNameWithUppercaseLastName(rawName)
+  let rawName = ''
+  let headline = ''
 
-  const headlineNodes = $x('//div[contains(@class, "break-words")][@data-generated-suggestion-target]')
-  const headline = (headlineNodes[0] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
+  const verifiedBadgeNodes = $x('//div[@data-view-name="profile-top-card-verified-badge"]//p[1]')
+  if (verifiedBadgeNodes.length > 0) {
+    rawName = (verifiedBadgeNodes[0] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
+
+    const badgeContainer = (verifiedBadgeNodes[0] as HTMLElement).closest('div[data-view-name="profile-top-card-verified-badge"]')
+    if (badgeContainer) {
+      const allParagraphs = $x('following::p', badgeContainer)
+      for (let i = 0; i < Math.min(allParagraphs.length, 5); i++) {
+        const text = (allParagraphs[i] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
+        if (text && text.length > 20 && !text.startsWith('·') && !text.includes('abonnés')) {
+          headline = text
+          break
+        }
+      }
+    }
+  }
+
+  if (!rawName) {
+    const nameNodes = $x('//main//h1')
+    rawName = (nameNodes[0] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
+  }
+
+  if (!headline) {
+    const headlineNodes = $x('//div[contains(@class, "break-words")][@data-generated-suggestion-target]')
+    headline = (headlineNodes[0] as HTMLElement)?.textContent?.trim().replace(/\s+/g, ' ') || ''
+  }
+
+  const name = formatNameWithUppercaseLastName(rawName)
 
   if (!name || !url)
     return null
