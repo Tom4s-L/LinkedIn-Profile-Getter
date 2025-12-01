@@ -6,8 +6,24 @@ export function injectButtonIntoProfilePage() {
   if (document.querySelector('.tg-log-btn-profile'))
     return
 
-  const newContainer = $x('/html/body/div[1]/div[2]/div[2]/div[2]/div/main/div/div/div[1]/div/div/div[1]/div/section/div/div/div[2]')
-  let targetContainer = newContainer[0] as HTMLElement | null
+  let targetContainer: HTMLElement | null = null
+
+  const newContainer = $x('/html/body/div[1]/div[2]/div[2]/div[2]/div/main/div/div/div[1]/div/div/div[2]/div/div/div/div/div[2]')
+  targetContainer = newContainer[0] as HTMLElement | null
+
+  if (!targetContainer) {
+    const messageButton = $x('//a[@data-view-name="profile-primary-message"]')
+    if (messageButton.length > 0) {
+      targetContainer = messageButton[0].parentElement as HTMLElement
+    }
+  }
+
+  if (!targetContainer) {
+    const overflowButton = $x('//button[@data-view-name="profile-overflow-button"]')
+    if (overflowButton.length > 0) {
+      targetContainer = overflowButton[0].parentElement as HTMLElement
+    }
+  }
 
   if (!targetContainer) {
     const actionButtons = $x('//div[contains(@class, "pvs-profile-actions")]')
